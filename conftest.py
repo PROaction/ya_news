@@ -5,7 +5,6 @@ from django.utils import timezone
 from news.models import News, Comment
 from yanews import settings
 
-
 HOME_URL = reverse('news:home')
 
 COMMENT_TEXT = 'Текст комментария'
@@ -81,3 +80,18 @@ def comment(news, author):
 @pytest.fixture
 def pk_for_args(news):
     return news.pk,
+
+
+@pytest.fixture
+def detail_url(news):
+    return reverse('news:detail', args=(news.id,))
+
+
+@pytest.fixture
+def delete_comment_url(comment):
+    return reverse('news:delete', args=(comment.id,))
+
+
+@pytest.fixture
+def edit_comment_url(comment):
+    return reverse('news:edit', args=(comment.id,))
