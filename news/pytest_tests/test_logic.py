@@ -36,7 +36,8 @@ def test_user_can_create_comment(
 def test_user_cant_use_bad_words(admin_client, news, detail_url):
     expected_comments_count = news.comment_set.count()
 
-    bad_words_data = {'text': f'Какой-то текст, {random.choice(BAD_WORDS)}, еще текст'}
+    bad_words_data = {'text': (f'Какой-то текст, '
+                               f'{random.choice(BAD_WORDS)}, еще текст')}
     response = admin_client.post(detail_url, data=bad_words_data)
     assertFormError(
         response,
