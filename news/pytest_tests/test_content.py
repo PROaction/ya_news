@@ -35,8 +35,8 @@ def test_comments_order(client, news, two_comments_from_news, detail_url):
 
 @pytest.mark.parametrize(
     ('user_client', 'form_in_context'), (
-      (pytest.lazy_fixture('client'), False),
-      (pytest.lazy_fixture('admin_client'), True)
+        (pytest.lazy_fixture('client'), False),
+        (pytest.lazy_fixture('admin_client'), True)
     )
 )
 @pytest.mark.django_db

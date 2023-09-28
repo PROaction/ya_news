@@ -8,11 +8,11 @@ from pytest_django.asserts import assertRedirects
 @pytest.mark.parametrize(
     ('name', 'args'),
     (
-            ('news:home', None),
-            ('news:detail', pytest.lazy_fixture('pk_for_args')),
-            ('users:login', None),
-            ('users:logout', None),
-            ('users:signup', None),
+        ('news:home', None),
+        ('news:detail', pytest.lazy_fixture('pk_for_args')),
+        ('users:login', None),
+        ('users:logout', None),
+        ('users:signup', None),
     )
 )
 @pytest.mark.django_db
@@ -25,16 +25,16 @@ def test_pages_availability(name, args, client):
 @pytest.mark.parametrize(
     ('user_client', 'expected_status'),
     (
-            (pytest.lazy_fixture('author_client'), HTTPStatus.OK),
-            (pytest.lazy_fixture('reader_client'), HTTPStatus.NOT_FOUND),
+        (pytest.lazy_fixture('author_client'), HTTPStatus.OK),
+        (pytest.lazy_fixture('reader_client'), HTTPStatus.NOT_FOUND),
     )
 )
 @pytest.mark.parametrize(
     ('template_name', 'args'),
     (
-            ('news:edit', pytest.lazy_fixture('pk_for_args')),
-            ('news:delete', pytest.lazy_fixture('pk_for_args'))
-     )
+        ('news:edit', pytest.lazy_fixture('pk_for_args')),
+        ('news:delete', pytest.lazy_fixture('pk_for_args'))
+    )
 )
 def test_availability_for_comment_edit_and_delete(
         user_client, expected_status, template_name, args, news, comment
@@ -47,9 +47,9 @@ def test_availability_for_comment_edit_and_delete(
 @pytest.mark.parametrize(
     ('template_name', 'args'),
     (
-            ('news:edit', pytest.lazy_fixture('pk_for_args')),
-            ('news:delete', pytest.lazy_fixture('pk_for_args'))
-     )
+        ('news:edit', pytest.lazy_fixture('pk_for_args')),
+        ('news:delete', pytest.lazy_fixture('pk_for_args'))
+    )
 )
 @pytest.mark.django_db
 def test_redirect_for_anonymous_client(
