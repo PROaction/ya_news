@@ -53,7 +53,7 @@ def test_author_can_delete_comment(
     author_client, news, comment, detail_url, delete_comment_url
 ):
     url_to_comments = detail_url + '#comments'
-    expected_comments_count = len(news.comment_set.all()) - 1
+    expected_comments_count = news.comment_set.count() - 1
 
     response = author_client.delete(delete_comment_url)
     assertRedirects(response, url_to_comments)
@@ -66,6 +66,8 @@ def test_author_can_edit_comment(
 ):
     url_to_comments = detail_url + '#comments'
     expected_author = comment.author
+    expected_news_title = news.title
+    expected_news_text = news.text
 
     response = author_client.post(edit_comment_url, data=form_data)
     assertRedirects(response, url_to_comments)
@@ -73,14 +75,22 @@ def test_author_can_edit_comment(
     assert comment.text == NEW_COMMENT_TEXT
     assert comment.author == expected_author
 
+    assert news.title == expected_news_title
+    assert news.text == expected_news_text
+
 
 def test_user_cant_edit_comment_of_another_user(
         reader_client, form_data, news, comment, edit_comment_url
 ):
     expected_author = comment.author
+    expected_news_title = news.title
+    expected_news_text = news.text
 
     response = reader_client.post(edit_comment_url, data=form_data)
     assert response.status_code == HTTPStatus.NOT_FOUND
     comment.refresh_from_db()
     assert comment.text == COMMENT_TEXT
     assert comment.author == expected_author
+
+    assert news.title == expected_news_title
+    assert news.text == expected_news_text

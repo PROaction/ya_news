@@ -30,33 +30,31 @@ def test_pages_availability(name, args, client):
     )
 )
 @pytest.mark.parametrize(
-    ('template_name', 'args'),
+    'url',
     (
-        ('news:edit', pytest.lazy_fixture('pk_for_args')),
-        ('news:delete', pytest.lazy_fixture('pk_for_args'))
+        pytest.lazy_fixture('edit_comment_url'),
+        pytest.lazy_fixture('delete_comment_url'),
     )
 )
 def test_availability_for_comment_edit_and_delete(
-        user_client, expected_status, template_name, args, news, comment
+        user_client, expected_status, url, news, comment
 ):
-    url = reverse(template_name, args=args)
     response = user_client.get(url)
     assert response.status_code == expected_status
 
 
 @pytest.mark.parametrize(
-    ('template_name', 'args'),
+    'url',
     (
-        ('news:edit', pytest.lazy_fixture('pk_for_args')),
-        ('news:delete', pytest.lazy_fixture('pk_for_args'))
+        pytest.lazy_fixture('edit_comment_url'),
+        pytest.lazy_fixture('delete_comment_url'),
     )
 )
 @pytest.mark.django_db
 def test_redirect_for_anonymous_client(
-        client, template_name, args
+        client, url
 ):
     login_url = reverse('users:login')
-    url = reverse(template_name, args=args)
     redirect_url = f'{login_url}?next={url}'
     response = client.get(url)
     assertRedirects(response, redirect_url)
