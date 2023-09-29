@@ -22,11 +22,13 @@ def test_anonymous_user_cant_create_comment(
 def test_user_can_create_comment(
     admin_user, admin_client, news, form_data, detail_url
 ):
+    comments_count = Comment.objects.count()
+
     response = admin_client.post(detail_url, data=form_data)
     assertRedirects(response, f'{detail_url}#comments')
-    comments_count = Comment.objects.count()
-    expected_comments_count = news.comment_set.count()
-    assert comments_count == expected_comments_count
+
+    actual_comments_count = Comment.objects.count()
+    assert actual_comments_count == comments_count + 1
     comment = Comment.objects.get()
     assert comment.text == NEW_COMMENT_TEXT
     assert comment.news == news
@@ -66,31 +68,25 @@ def test_author_can_edit_comment(
 ):
     url_to_comments = detail_url + '#comments'
     expected_author = comment.author
-    expected_news_title = news.title
-    expected_news_text = news.text
+    expected_news = comment.news
 
     response = author_client.post(edit_comment_url, data=form_data)
     assertRedirects(response, url_to_comments)
     comment.refresh_from_db()
     assert comment.text == NEW_COMMENT_TEXT
     assert comment.author == expected_author
-
-    assert news.title == expected_news_title
-    assert news.text == expected_news_text
+    assert comment.news == expected_news
 
 
 def test_user_cant_edit_comment_of_another_user(
         reader_client, form_data, news, comment, edit_comment_url
 ):
     expected_author = comment.author
-    expected_news_title = news.title
-    expected_news_text = news.text
+    expected_news = comment.news
 
     response = reader_client.post(edit_comment_url, data=form_data)
     assert response.status_code == HTTPStatus.NOT_FOUND
     comment.refresh_from_db()
     assert comment.text == COMMENT_TEXT
     assert comment.author == expected_author
-
-    assert news.title == expected_news_title
-    assert news.text == expected_news_text
+    assert comment.news == expected_news
